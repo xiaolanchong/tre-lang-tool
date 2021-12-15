@@ -1,0 +1,9 @@
+[
+  {
+    "id" : 1000,
+    "name" : "Пинбол-1973",
+    "description": "Отрывок из книги „Пинбол 1973“",
+    "language": "ko",
+    "fileName": "ko/Pinball1973.txt"
+  }
+]
