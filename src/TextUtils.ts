@@ -35,8 +35,16 @@ const decomposeAllCases = (syllable: string) => {
     const normal = convertJamo(syllable[syllable.length-1])
     if (isSingleLetterInitial(normal))
         return [normal]
-    else
-        return decompose(normal)
+    
+    const letters = decompose(normal)
+    // special case to split ᅴ
+    for(let i = 0; i < letters.length; ++i)
+        if(letters[i] === 'ᅴ') {
+            letters[i] = 'ᅵ'
+            letters.splice(i, 0, 'ᅳ')
+            ++i
+        }  
+    return letters    
 }
 
 function arraysEqual(a: any[], b: any[]) {
@@ -87,6 +95,7 @@ function convertJamo(syllable: string): string {
 }
 
 function getLastWordStartPos(text: string) {
+    /*
     const re = /\s+/g;
     let match
     let lastMatchIndex
@@ -94,6 +103,9 @@ function getLastWordStartPos(text: string) {
         lastMatchIndex = match.index + match.length
     }
     return lastMatchIndex ?? 0;
+    */
+   const match = /\S+\s*$/u.exec(text)
+   return match !== null ? match.index : 0
 }
 
 enum CheckStatus {

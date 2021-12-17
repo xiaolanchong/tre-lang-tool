@@ -5,5 +5,12 @@
     "description": "Отрывок из книги „Пинбол 1973“",
     "language": "ko",
     "fileName": "ko/Pinball1973.txt"
+  },
+  {
+    "id" : 1001,
+    "name" : "Korean Grammar in Use (Beginner)",
+    "description": "Предложения из Korean Grammar in Use (Beginner)",
+    "language": "ko",
+    "fileName": "ko/KoreanGrammarInUseBeg.txt"
   }
 ]

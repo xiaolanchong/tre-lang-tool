@@ -23,6 +23,7 @@
 .check_failure {
     border-color: red;
     background-color: #fff0f0;
+    color: #1f1f0f
     /* */
 }
 

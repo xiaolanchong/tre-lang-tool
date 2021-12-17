@@ -29,12 +29,11 @@ interface MatchingInputProps {
 const MatchingInput = ({source}: MatchingInputProps) => {
     const [currentText, setText] = useState('')
 
-    //const [visible, setVisibility] = useState(false)
     const [tooltipText, setTooltipText] = useState(<></>)
     const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
     const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null);
     const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null);
-    const { styles, attributes, update } = usePopper(referenceElement, popperElement, {
+    const { styles, attributes } = usePopper(referenceElement, popperElement, {
       modifiers: [
             { name: 'arrow', options: { element: arrowElement} }, 
             { name: 'hide' },
