@@ -66,7 +66,6 @@ async function* makeTextFileLineIterator(fileURL: string) {
   async function getTextDeck(root_url: string, deckInfo: DeckJsonRecord) {
       //
     const url = `${root_url}/deck/${deckInfo.fileName}`
-    console.log(`-------------- ${url}`)
     const rows = []
     let index = 0
     for await (let line of makeTextFileLineIterator(url)) {

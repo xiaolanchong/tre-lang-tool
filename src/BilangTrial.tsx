@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 //import queryString from 'query-string';
 import { dataDb, DeckData, RowData } from "./DataDB"
+import { MatchingInput } from "./MatchingInput"
 
 enum TrialMode {
   Translate,
@@ -39,7 +40,7 @@ const Row = ( {currentMode, textInLanguage1, textInLanguage2}: RowProps) => {
             </tr>
     case TrialMode.Enter:
       return <tr>
-              <td><input></input></td>
+              <td width='50%'><MatchingInput source={textInLanguage1}/></td>
               <td>{textInLanguage2}</td>
             </tr>
     default:

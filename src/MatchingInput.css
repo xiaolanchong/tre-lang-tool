@@ -1,0 +1,31 @@
+
+#tooltip {
+ /*   background-color: #fff0f0;
+    border: 1px solid;
+    border-color: salmon;
+    border-radius: 2px;
+    color: red;*/
+    border: 1px solid;
+    border-radius: 2px;
+    margin: 1px 1px
+}
+/*
+#tooltip_arrow {
+    background-color: wheat;
+}*/
+
+.check_ok {
+    border-color: rgb(43, 82, 76);
+    color: rgb(0, 128, 49);
+    background-color:  rgb(188, 231, 188);
+}
+
+.check_failure {
+    border-color: red;
+    background-color: #fff0f0;
+    /* */
+}
+
+.check_failure_text {
+    color: red;
+}
