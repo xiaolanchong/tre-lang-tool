@@ -32,11 +32,19 @@ test('Korean: correct prefix', () => {
 
   expect(CheckKoreanText('의', '으')).toStrictEqual(
     {status: CheckStatus.PartialMatch, toDelete: '', toInsert: ''}
-  ); 
-  
+  );  
   expect(CheckKoreanText('희', '흐')).toStrictEqual(
     {status: CheckStatus.PartialMatch, toDelete: '', toInsert: ''}
   );
+  expect(CheckKoreanText('희', '흐')).toStrictEqual(
+    {status: CheckStatus.PartialMatch, toDelete: '', toInsert: ''}
+  );
+  expect(CheckKoreanText('관', '고')).toStrictEqual(
+    {status: CheckStatus.PartialMatch, toDelete: '', toInsert: ''}
+  );
+  expect(CheckKoreanText('관', '과')).toStrictEqual(
+    {status: CheckStatus.PartialMatch, toDelete: '', toInsert: ''}
+  ); 
 
   expect(CheckKoreanText('100', '10')).toStrictEqual(
     {status: CheckStatus.PartialMatch, toDelete: '', toInsert: ''}

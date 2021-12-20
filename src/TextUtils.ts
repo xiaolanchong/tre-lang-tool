@@ -31,19 +31,29 @@ const decompose = (syllable: string) => {
     return resString //String.fromCharCode(...result)
 }
 
+// from https://en.wikipedia.org/wiki/Hangul_Jamo_(Unicode_block)
+const diphtongs = new Map<string, string[]>([
+    ['ᅱ', ['ᅮ', 'ᅵ']],
+    ['ᅰ', ['ᅮ', 'ᅦ']],
+    ['ᅫ', ['ᅩ', 'ᅢ']],
+    ['ᅪ', ['ᅩ', 'ᅡ ']],
+    ['ᅬ', ['ᅩ', 'ᅵ ']],
+    ['ᅯ', ['ᅮ', 'ᅥ']],
+    ['ᅴ', ['ᅳ', 'ᅵ']]
+])
+
 const decomposeAllCases = (syllable: string) => {
     const normal = convertJamo(syllable[syllable.length-1])
     if (isSingleLetterInitial(normal))
         return [normal]
     
     const letters = decompose(normal)
-    // special case to split ᅴ
-    for(let i = 0; i < letters.length; ++i)
-        if(letters[i] === 'ᅴ') {
-            letters[i] = 'ᅵ'
-            letters.splice(i, 0, 'ᅳ')
-            ++i
-        }  
+    const value = diphtongs.get(letters[1])
+    if(value) {
+        const [first, second] = value
+        letters[1] = second
+        letters.splice(1, 0, first)
+    } 
     return letters    
 }
 
