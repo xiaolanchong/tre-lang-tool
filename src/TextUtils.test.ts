@@ -20,6 +20,10 @@ test('Korean: incorrect prefix', () => {
     {status: CheckStatus.Mismatch, toDelete: '히', toInsert: '희'}
   );
 
+  expect(CheckKoreanText('무엇', '뭣')).toStrictEqual(
+    {status: CheckStatus.Mismatch, toDelete: '뭣', toInsert: '무'}
+  );
+
   expect(CheckKoreanText('10년이나', '10년 ')).toStrictEqual(
     {status: CheckStatus.Mismatch, toDelete: '10년 ', toInsert: '10년이'}
   );
@@ -44,6 +48,14 @@ test('Korean: correct prefix', () => {
   );
   expect(CheckKoreanText('관', '과')).toStrictEqual(
     {status: CheckStatus.PartialMatch, toDelete: '', toInsert: ''}
+  ); 
+
+  expect(CheckKoreanText('달기', '닭')).toStrictEqual(
+    {status: CheckStatus.PartialMatch, toDelete: '', toInsert: ''}
+  ); 
+
+  expect(CheckKoreanText('달기', '닭', false)).toStrictEqual(
+    {status: CheckStatus.Mismatch, toDelete: '닭', toInsert: '달'}
   ); 
 
   expect(CheckKoreanText('100', '10')).toStrictEqual(

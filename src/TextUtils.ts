@@ -1,5 +1,4 @@
 
-
 // See http://unicode.org/versions/Unicode5.2.0/ch03.pdf
 // 3.12 Hangul Syllable Decomposition
 // Jamo codes: http://www.unicode.org/charts/PDF/U1100.pdf
@@ -8,8 +7,6 @@ const SBase = 0xAC00
 const LBase = 0x1100
 const VBase = 0x1161
 const TBase = 0x11A7
-//const SCount = 11172
-//const LCount = 19
 const VCount = 21
 const TCount = 28
 const NCount = VCount * TCount
@@ -28,7 +25,7 @@ const decompose = (syllable: string) => {
     for (let entry of result) {
         resString.push(String.fromCharCode(entry))
     }
-    return resString //String.fromCharCode(...result)
+    return resString
 }
 
 // from https://en.wikipedia.org/wiki/Hangul_Jamo_(Unicode_block)
@@ -36,10 +33,31 @@ const diphtongs = new Map<string, string[]>([
     ['ᅱ', ['ᅮ', 'ᅵ']],
     ['ᅰ', ['ᅮ', 'ᅦ']],
     ['ᅫ', ['ᅩ', 'ᅢ']],
-    ['ᅪ', ['ᅩ', 'ᅡ ']],
-    ['ᅬ', ['ᅩ', 'ᅵ ']],
+    ['ᅪ', ['ᅩ', 'ᅡ']],
+    ['ᅬ', ['ᅩ', 'ᅵ']],
     ['ᅯ', ['ᅮ', 'ᅥ']],
     ['ᅴ', ['ᅳ', 'ᅵ']]
+])
+
+const finalDoublePatchims = new Map<string, string[]>([
+   /* ['ᄁ', ['ᄀ', 'ᄀ']],
+    ['ᄄ', ['ᄃ', 'ᄃ']],
+    ['ᄈ', ['ᄇ', 'ᄇ']],
+    ['ᄊ', ['ᄉ', 'ᄉ']],
+    ['ᄍ', ['ᄌ', 'ᄌ']],*/
+    ['ᆩ', ['ᆨ', 'ᄀ']],
+    ['ᆪ', ['ᆨ', 'ᄉ']],
+    ['ᆬ', ['ᆫ', 'ᄌ']],
+    ['ᆭ', ['ᆫ', 'ᄒ']],  //  	 	 	 	 	 	 	ᆷ 	ᆸ 	
+    ['ᆰ', ['ᆯ', 'ᄀ']],
+    ['ᆱ', ['ᆯ', 'ᄆ']],
+    ['ᆲ', ['ᆯ', 'ᄇ']],
+    ['ᆳ', ['ᆯ', 'ᄉ']],
+    ['ᆴ', ['ᆯ', 'ᄐ']],
+    ['ᆵ', ['ᆯ', 'ᄑ']],
+    ['ᆶ', ['ᆯ', 'ᄒ']],
+    ['ᆹ', ['ᆸ', 'ᄉ']],
+    ['ᆻ', ['ᆺ', 'ᄉ']],  // 
 ])
 
 const decomposeAllCases = (syllable: string) => {
@@ -48,12 +66,21 @@ const decomposeAllCases = (syllable: string) => {
         return [normal]
     
     const letters = decompose(normal)
-    const value = diphtongs.get(letters[1])
-    if(value) {
-        const [first, second] = value
-        letters[1] = second
-        letters.splice(1, 0, first)
-    } 
+    const vowel = diphtongs.get(letters[1])
+    if(vowel) {
+        const [first, second] = vowel
+        letters[1] = first
+        letters.splice(2, 0, second)
+    }
+    if(letters.length < 3)
+        return letters
+
+    const finals = finalDoublePatchims.get(letters[2])
+    if(finals) {
+        const [first, second] = finals
+        letters[2] = first
+        letters.splice(3, 0, second)
+    }    
     return letters    
 }
 
@@ -105,15 +132,6 @@ function convertJamo(syllable: string): string {
 }
 
 function getLastWordStartPos(text: string) {
-    /*
-    const re = /\s+/g;
-    let match
-    let lastMatchIndex
-    while ((match = re.exec(text)) != null) {
-        lastMatchIndex = match.index + match.length
-    }
-    return lastMatchIndex ?? 0;
-    */
    const match = /\S+\s*$/u.exec(text)
    return match !== null ? match.index : 0
 }
@@ -130,7 +148,7 @@ interface CheckResult {
     toInsert: string
 } 
 
-const CheckKoreanText = (source: string, inputText: string): CheckResult => {
+const CheckKoreanText = (source: string, inputText: string, canContinueInput:boolean=true): CheckResult => {
     if (source === inputText)
         return {status: CheckStatus.Ok, toDelete: '', toInsert: ''}
     const lastWordIndex = getLastWordStartPos(inputText)
@@ -145,7 +163,15 @@ const CheckKoreanText = (source: string, inputText: string): CheckResult => {
     {
         const sourceLastCharDecomposed = decomposeAllCases(mustBe[mustBe.length-1])
         const currentLastCharDecomposed = decomposeAllCases(inputLastWord[inputLastWord.length-1])
-        const commonLength = Math.min(sourceLastCharDecomposed.length, currentLastCharDecomposed.length)
+        if(currentLastCharDecomposed.length > sourceLastCharDecomposed.length)
+            if(source.length > inputText.length && canContinueInput){
+                const borrowedChar = source[inputText.length]
+                const extraChars = decomposeAllCases(borrowedChar)
+                sourceLastCharDecomposed.push(...extraChars)
+            }
+            else
+                return {status: CheckStatus.Mismatch, toDelete: inputLastWord, toInsert: mustBe}
+        const commonLength = currentLastCharDecomposed.length
         if(arraysEqual(sourceLastCharDecomposed.slice(0, commonLength),
                        currentLastCharDecomposed.slice(0, commonLength)))
             return {status: CheckStatus.PartialMatch, toDelete: '', toInsert: ''}

@@ -1,4 +1,3 @@
-//import {useState} from 'react'
 import {DeckInfo} from './DataDB'
 
 interface PassageListProps {
